@@ -1,15 +1,17 @@
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export default function NewTweet() {
   const [content, setContent] = useState('');
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   const handleContent = event => {
     setContent(event.target.value);
   }
 
-  const handleSubmit = event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!content) {
@@ -17,7 +19,7 @@ export default function NewTweet() {
       return;
     }
 
-    fetch('/api/tweet', {
+    await fetch('/api/tweet', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,6 +28,8 @@ export default function NewTweet() {
         content
       })
     });
+    
+    router.reload(window.location.pathname);
   }
 
   if (!session || !session.user)
