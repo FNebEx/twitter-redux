@@ -23,10 +23,11 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { content } = req.body;
+    const { content, parent } = req.body;
     await prisma.tweet.create({
       data: {
         content,
+        parent: parent || null,
         author: {
           connect: { id: user.id }
         }
